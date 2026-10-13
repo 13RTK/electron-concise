@@ -1,0 +1,19 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "target": "es2022",
+    "lib": [
+      "es2022",
+      "DOM"
+    ]
+  },
+  "files": [
+    "src/renderer.ts"
+  ],
+  "include": [],
+  "angularCompilerOptions": {
+    "strictTemplates": true
+  }
+}
