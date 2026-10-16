@@ -8,7 +8,12 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "jsx": "react-jsx"
   },
-  "include": ["src/**/*", "*.ts", "*.mts"]
+  "include": [
+    "src/**/*",
+    "*.ts",
+    "*.mts"
+  ]
 }
