@@ -1,4 +1,12 @@
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  dialog,
+  ipcMain,
+  Menu,
+  MenuItemConstructorOptions,
+  shell,
+} from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { WINDOW_ACTION_CHANNEL } from './types/channels/window';
@@ -41,6 +49,38 @@ const createWindow = () => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
+
+  const menuTemplate: MenuItemConstructorOptions[] = [
+    {
+      role: 'appMenu',
+    },
+    {
+      role: 'fileMenu',
+    },
+    {
+      role: 'editMenu',
+    },
+    {
+      role: 'viewMenu',
+    },
+    {
+      role: 'windowMenu',
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'Documentation',
+          click: () => {
+            shell.openExternal('https://space.bilibili.com/337242418');
+          },
+        },
+      ],
+    },
+  ];
+
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  Menu.setApplicationMenu(menu);
 
   ipcMain.on(WINDOW_ACTION_CHANNEL, handleWindowAction);
 
