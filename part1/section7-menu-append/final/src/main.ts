@@ -1,9 +1,11 @@
 import {
   app,
+  BaseWindow,
   BrowserWindow,
   dialog,
   ipcMain,
   Menu,
+  MenuItem,
   MenuItemConstructorOptions,
   shell,
 } from 'electron';
@@ -50,22 +52,30 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow();
 
+  const alwaysOnTopMenuItem: MenuItemConstructorOptions = {
+    label: 'Always on top',
+    type: 'checkbox',
+    click: (menuItem, window) => {
+      window?.setAlwaysOnTop(menuItem.checked);
+    },
+  };
+
+  const appMenu =
+    Menu.getApplicationMenu()?.items.map((item: MenuItem) => {
+      if (item.role?.toLowerCase() === 'windowmenu') {
+        return new MenuItem({
+          role: 'windowMenu',
+          submenu: Menu.buildFromTemplate([
+            alwaysOnTopMenuItem,
+            ...(item.submenu?.items ?? []),
+          ]),
+        });
+      }
+
+      return item;
+    }) ?? [];
+
   const menuTemplate: MenuItemConstructorOptions[] = [
-    {
-      role: 'appMenu',
-    },
-    {
-      role: 'fileMenu',
-    },
-    {
-      role: 'editMenu',
-    },
-    {
-      role: 'viewMenu',
-    },
-    {
-      role: 'windowMenu',
-    },
     {
       role: 'help',
       submenu: [
@@ -79,7 +89,7 @@ app.whenReady().then(() => {
     },
   ];
 
-  const menu = Menu.buildFromTemplate(menuTemplate);
+  const menu = Menu.buildFromTemplate([...appMenu, ...menuTemplate]);
   Menu.setApplicationMenu(menu);
 
   ipcMain.on(WINDOW_ACTION_CHANNEL, handleWindowAction);
