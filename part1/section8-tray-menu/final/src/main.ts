@@ -7,6 +7,7 @@ import {
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
+  nativeImage,
   shell,
 } from 'electron';
 import path from 'node:path';
@@ -19,6 +20,8 @@ import { handleWindowAction } from './utils/windowHelper';
 if (started) {
   app.quit();
 }
+
+const isMac = process.platform === 'darwin';
 
 const createWindow = () => {
   // Create the browser window.
@@ -58,6 +61,9 @@ app.whenReady().then(() => {
     click: (menuItem, window) => {
       window?.setAlwaysOnTop(menuItem.checked);
     },
+    icon: isMac
+      ? nativeImage.createMenuSymbol('pin')
+      : nativeImage.createFromPath(`${app.getAppPath()}/assets/pin.png`),
   };
 
   const appMenu =
@@ -107,7 +113,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (!isMac) {
     app.quit();
   }
 });
