@@ -1,19 +1,17 @@
 import {
   app,
-  BaseWindow,
   BrowserWindow,
-  dialog,
   ipcMain,
   Menu,
   MenuItem,
   MenuItemConstructorOptions,
   nativeImage,
   shell,
+  Tray,
 } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
 import { WINDOW_ACTION_CHANNEL } from './types/channels/window';
-import { WindowAction } from './types/WindowAction';
 import { handleWindowAction } from './utils/windowHelper';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -22,6 +20,7 @@ if (started) {
 }
 
 const isMac = process.platform === 'darwin';
+let tray: Tray;
 
 const createWindow = () => {
   // Create the browser window.
@@ -94,6 +93,17 @@ app.whenReady().then(() => {
       ],
     },
   ];
+
+  const logo = nativeImage.createFromPath(
+    `${app.getAppPath()}/assets/logo.png`,
+  );
+  if (isMac) {
+    logo.setTemplateImage(true);
+  }
+
+  tray = new Tray(logo);
+  const contextMenu = Menu.buildFromTemplate([{ role: 'quit' }]);
+  tray.setContextMenu(contextMenu);
 
   const menu = Menu.buildFromTemplate([...appMenu, ...menuTemplate]);
   Menu.setApplicationMenu(menu);
