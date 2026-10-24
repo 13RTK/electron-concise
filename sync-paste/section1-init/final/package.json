@@ -1,6 +1,6 @@
 {
-  "name": "electron-forge-starter",
-  "productName": "electron-forge-starter",
+  "name": "sync-paste",
+  "productName": "SyncPaste",
   "version": "1.0.0",
   "private": true,
   "description": "My Electron application description",

@@ -94,14 +94,14 @@ app.whenReady().then(() => {
     },
   ];
 
-  const logo = nativeImage.createFromPath(
-    `${app.getAppPath()}/assets/logo.png`,
+  const trayLogo = nativeImage.createFromPath(
+    `${app.isPackaged ? process.resourcesPath : app.getAppPath()}/assets/tray.png`,
   );
   if (isMac) {
-    logo.setTemplateImage(true);
+    trayLogo.setTemplateImage(true);
   }
 
-  tray = new Tray(logo);
+  tray = new Tray(trayLogo);
   const contextMenu = Menu.buildFromTemplate([{ role: 'quit' }]);
   tray.setContextMenu(contextMenu);
 

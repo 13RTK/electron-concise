@@ -10,6 +10,8 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    icon: `${import.meta.dirname}/assets/app`,
+    extraResource: `${import.meta.dirname}/assets`,
   },
   rebuildConfig: {},
   makers: [
@@ -42,6 +44,7 @@ const config: ForgeConfig = {
         },
       ],
     }),
+
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application
     new FusesPlugin({
