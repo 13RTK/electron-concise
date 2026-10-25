@@ -1,8 +1,7 @@
 /// <reference types="@electron-forge/plugin-vite/forge-vite-env" />
+/// <reference types="vite/client" />
 
 import { WindowAction } from './types/WindowAction';
-
-declare module '*.css';
 
 export interface IElectronAPI {
   windowAction: (action: WindowAction) => void;

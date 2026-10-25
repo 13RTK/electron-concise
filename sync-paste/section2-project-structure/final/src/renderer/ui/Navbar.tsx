@@ -3,7 +3,7 @@ import {
   MinusIcon,
   XSquareIcon,
 } from '@phosphor-icons/react';
-import { WindowAction } from '../types/WindowAction';
+import { WindowAction } from '@/types/WindowAction';
 
 function Navbar() {
   const windowAction = window.electronAPI.windowAction;
