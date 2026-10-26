@@ -1,9 +1,16 @@
+import { loadWindow } from '@/main/windows/loadWindowHelper';
 import { BrowserWindow } from 'electron';
 import path from 'node:path';
 
+let mainWindow: BrowserWindow;
+
 export function createMainWindow() {
+  if (mainWindow) {
+    return mainWindow;
+  }
+
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     show: false,
@@ -13,16 +20,11 @@ export function createMainWindow() {
     },
   });
 
-  // and load the index.html of the app.
-  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-  } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
-    );
-  }
+  loadWindow(mainWindow, 'home');
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
+
+  return mainWindow;
 }
