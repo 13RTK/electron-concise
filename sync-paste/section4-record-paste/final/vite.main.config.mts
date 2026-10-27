@@ -8,4 +8,10 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)), // Alias for src folder
     },
   },
+
+  build: {
+    rolldownOptions: {
+      external: ['@crosscopy/clipboard'],
+    },
+  },
 });
