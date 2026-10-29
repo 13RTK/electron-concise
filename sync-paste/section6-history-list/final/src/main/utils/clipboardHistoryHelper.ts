@@ -1,10 +1,12 @@
+import { ClipboardAction } from '@/types/ClipboardAction';
 import { ClipboardHistory } from '@/types/ClipboardHistory';
-import { startWatch, getText } from '@crosscopy/clipboard';
-import { app } from 'electron';
+import { startWatch, getText, ClipboardWatcherJs } from '@crosscopy/clipboard';
+import { app, IpcMainInvokeEvent } from 'electron';
 import { DatabaseSync } from 'node:sqlite';
 
 const userDataDir = app.getPath('userData');
 const database = new DatabaseSync(`${userDataDir}/clipboard_history.db`);
+let watcher: ClipboardWatcherJs;
 
 database.exec(`
   CREATE TABLE IF NOT EXISTS clipboard_history (
@@ -23,15 +25,27 @@ const queryClipboardHistory = database.prepare(
 );
 
 export function startMonitor() {
-  const watcher = startWatch(async () => {
+  watcher = startWatch(async () => {
     const text = await getText();
 
     insertClipboardHistory.run(text);
-
-    const clipboardHistory = queryClipboardHistory.all() as ClipboardHistory[];
-
-    console.log(clipboardHistory);
   });
 
   return watcher;
+}
+
+export function handleClipboardAction(
+  _event: IpcMainInvokeEvent,
+  action: ClipboardAction,
+) {
+  if (action === ClipboardAction.GET_HISTORIES) {
+    const clipboardHistory = queryClipboardHistory.all() as ClipboardHistory[];
+    return clipboardHistory;
+  }
+
+  if (action === ClipboardAction.STOP_MONITOR) {
+    return watcher.stop();
+  }
+
+  // TODO: query history
 }

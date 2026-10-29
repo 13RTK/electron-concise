@@ -1,5 +1,5 @@
 export type ClipboardHistory = {
   id: number;
-  text: string;
+  content: string;
   created_at: string;
 };
