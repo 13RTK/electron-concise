@@ -9,13 +9,23 @@ function Home() {
     ClipboardHistory[]
   >([]);
 
+  const { clipboardAction } = window.electronAPI;
+
   async function loadClipboardHistory() {
-    const clipboardHistoryList = await window.electronAPI.clipboardAction(
+    const clipboardHistoryList = await clipboardAction(
       ClipboardAction.GET_HISTORIES,
     );
 
-    if (clipboardHistoryList) {
+    if (Array.isArray(clipboardHistoryList)) {
       setClipboardHistoryList(clipboardHistoryList);
+    }
+  }
+
+  async function deleteClipboardHistory(id: number) {
+    const result = await clipboardAction(ClipboardAction.DELETE_HISTORY, id);
+
+    if (result) {
+      loadClipboardHistory();
     }
   }
 
@@ -30,6 +40,7 @@ function Home() {
           <ClipboardHistoryListItem
             key={clipboardHistory.id}
             clipboardHistory={clipboardHistory}
+            onDelete={deleteClipboardHistory}
           />
         ))}
       </ul>

@@ -10,8 +10,8 @@ const api = {
   windowAction: (action: WindowAction) =>
     ipcRenderer.send(WINDOW_ACTION_CHANNEL, action),
 
-  clipboardAction: (action: ClipboardAction) =>
-    ipcRenderer.invoke(CLIPBOARD_ACTION_CHANNEL, action),
+  clipboardAction: (action: ClipboardAction, historyId?: number) =>
+    ipcRenderer.invoke(CLIPBOARD_ACTION_CHANNEL, action, historyId),
 } satisfies Window[typeof apiKey];
 
 contextBridge.exposeInMainWorld(apiKey, api);
