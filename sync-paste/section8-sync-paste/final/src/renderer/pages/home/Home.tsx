@@ -9,7 +9,7 @@ function Home() {
     ClipboardHistory[]
   >([]);
 
-  const { clipboardAction } = window.electronAPI;
+  const { clipboardAction, onUpdateClipboard } = window.electronAPI;
 
   async function loadClipboardHistory() {
     const clipboardHistoryList = await clipboardAction(
@@ -32,6 +32,10 @@ function Home() {
   useEffect(() => {
     loadClipboardHistory();
   }, []);
+
+  onUpdateClipboard(() => {
+    loadClipboardHistory();
+  });
 
   return (
     <RootLayout>

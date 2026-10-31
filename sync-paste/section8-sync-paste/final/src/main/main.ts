@@ -20,14 +20,14 @@ let watcher: ClipboardWatcherJs;
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createMainWindow();
+  const mainWindow = createMainWindow();
 
   initTray();
   initAppMenu();
   windowIpcInit();
   clipboardIpcInit();
 
-  watcher = startMonitor();
+  watcher = startMonitor(mainWindow);
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.

@@ -1,7 +1,8 @@
+import { CLIPBOARD_UPDATE_CHANNEL } from '@/types/channels/clipboard';
 import { ClipboardAction } from '@/types/ClipboardAction';
 import { ClipboardHistory } from '@/types/ClipboardHistory';
 import { startWatch, getText, ClipboardWatcherJs } from '@crosscopy/clipboard';
-import { app, IpcMainInvokeEvent } from 'electron';
+import { app, BrowserWindow, IpcMainInvokeEvent } from 'electron';
 import { DatabaseSync } from 'node:sqlite';
 
 const userDataDir = app.getPath('userData');
@@ -28,11 +29,13 @@ const deleteClipboardHistory = database.prepare(
   'DELETE FROM clipboard_history WHERE id = ?',
 );
 
-export function startMonitor() {
+export function startMonitor(mainWindow: BrowserWindow) {
   watcher = startWatch(async () => {
     const text = await getText();
 
     insertClipboardHistory.run(text);
+
+    mainWindow.webContents.send(CLIPBOARD_UPDATE_CHANNEL);
   });
 
   return watcher;
