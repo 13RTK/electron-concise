@@ -1,6 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { WindowAction } from '@/types/WindowAction';
-import { WINDOW_ACTION_CHANNEL } from '@/types/channels/window';
+import {
+  CHANGE_TITLE_CHANNEL,
+  WINDOW_ACTION_CHANNEL,
+} from '@/types/channels/window';
 import { ClipboardAction } from '@/types/ClipboardAction';
 import {
   CLIPBOARD_ACTION_CHANNEL,
@@ -18,6 +21,9 @@ const api = {
 
   onUpdateClipboard: (callback) =>
     ipcRenderer.on(CLIPBOARD_UPDATE_CHANNEL, (_event) => callback()),
+
+  changeWindowTitle: (title: string) =>
+    ipcRenderer.send(CHANGE_TITLE_CHANNEL, title),
 } satisfies Window[typeof apiKey];
 
 contextBridge.exposeInMainWorld(apiKey, api);

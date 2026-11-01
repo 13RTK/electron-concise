@@ -12,6 +12,8 @@ export interface IElectronAPI {
   ) => Promise<void | ClipboardHistory[] | boolean>;
 
   onUpdateClipboard: (callback) => void;
+
+  changeWindowTitle: (title: string) => void;
 }
 
 declare global {

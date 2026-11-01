@@ -11,19 +11,31 @@ export function initTray() {
   }
 
   const tray = new Tray(trayLogo);
-  const contextMenu = Menu.buildFromTemplate([{ role: 'quit' }, {role: 'about'}, {
-    label: 'settings',
-    icon: nativeImage.createMenuSymbol('gear'),
-    click: () => {
-      const settingWindow = createSettingWindow()
-      if (settingWindow.isVisible()) {
-        settingWindow.show()
-      }
-    }
-  }]);
-
+  const contextMenu = Menu.buildFromTemplate([
+    { role: 'quit' },
+    {
+      label: 'about',
+      icon: nativeImage.createMenuSymbol('info'),
+      click: () => {
+        const settingWindow = createSettingWindow('about');
+        if (!settingWindow.isVisible()) {
+          settingWindow.show();
+        }
+      },
+    },
+    {
+      label: 'settings',
+      icon: nativeImage.createMenuSymbol('gear'),
+      click: () => {
+        const settingWindow = createSettingWindow('general');
+        if (!settingWindow.isVisible()) {
+          settingWindow.show();
+        }
+      },
+    },
+  ]);
 
   tray.on('right-click', () => {
     tray.popUpContextMenu(contextMenu);
-  })
+  });
 }
