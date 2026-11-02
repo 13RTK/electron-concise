@@ -1,5 +1,6 @@
+import General from '@/renderer/pages/setting/General';
 import { GearIcon, InfoIcon } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 
 function Setting() {
   const { changeWindowTitle } = window.electronAPI;
@@ -31,6 +32,12 @@ function Setting() {
           About
         </button>
       </nav>
+
+      <main className='flex justify-center'>
+        <Activity mode={tab === 'general' ? 'visible' : 'hidden'}>
+          <General />
+        </Activity>
+      </main>
     </>
   );
 }

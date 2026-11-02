@@ -9,6 +9,9 @@ import {
   CLIPBOARD_ACTION_CHANNEL,
   CLIPBOARD_UPDATE_CHANNEL,
 } from '@/types/channels/clipboard';
+import { SettingAction } from '@/types/SettingAction';
+import { SETTING_ACTION_CHANNEL } from '@/types/channels/setting';
+import { SettingKey, SettingValue } from '@/types/Setting';
 
 const apiKey = 'electronAPI';
 
@@ -24,6 +27,18 @@ const api = {
 
   changeWindowTitle: (title: string) =>
     ipcRenderer.send(CHANGE_TITLE_CHANNEL, title),
+
+  settingAction: (
+    action: SettingAction,
+    settingKey: SettingKey,
+    settingValue?: SettingValue,
+  ) =>
+    ipcRenderer.invoke(
+      SETTING_ACTION_CHANNEL,
+      action,
+      settingKey,
+      settingValue,
+    ),
 } satisfies Window[typeof apiKey];
 
 contextBridge.exposeInMainWorld(apiKey, api);

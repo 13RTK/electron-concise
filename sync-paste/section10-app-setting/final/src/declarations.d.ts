@@ -2,6 +2,7 @@
 /// <reference types="vite/client" />
 
 import { ClipboardHistory } from '@/types/ClipboardHistory';
+import { SettingKey, SettingValue } from '@/types/Setting';
 import { WindowAction } from '@/types/WindowAction';
 
 export interface IElectronAPI {
@@ -14,6 +15,12 @@ export interface IElectronAPI {
   onUpdateClipboard: (callback) => void;
 
   changeWindowTitle: (title: string) => void;
+
+  settingAction: (
+    action: SettingAction,
+    settingKey: SettingKey,
+    settingValue?: SettingValue,
+  ) => Promise<void | SettingValue>;
 }
 
 declare global {

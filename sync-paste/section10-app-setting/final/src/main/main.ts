@@ -7,6 +7,7 @@ import { createMainWindow } from '@/main/windows/mainWindow';
 import { ClipboardWatcherJs } from '@crosscopy/clipboard';
 import { startMonitor } from '@/main/utils/clipboardHistoryHelper';
 import { clipboardIpcInit } from '@/main/ipc/clipboard';
+import { settingIpcInit } from '@/main/ipc/setting';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -26,6 +27,7 @@ app.whenReady().then(() => {
   initAppMenu();
   windowIpcInit();
   clipboardIpcInit();
+  settingIpcInit();
 
   watcher = startMonitor(mainWindow);
 
