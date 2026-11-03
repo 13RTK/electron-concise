@@ -5,9 +5,13 @@ import { initAppMenu } from '@/main/menus/appMenu';
 import { windowIpcInit } from '@/main/ipc/window';
 import { createMainWindow } from '@/main/windows/mainWindow';
 import { ClipboardWatcherJs } from '@crosscopy/clipboard';
-import { startMonitor } from '@/main/utils/clipboardHistoryHelper';
+import {
+  registerMainWindow,
+  startMonitor,
+} from '@/main/utils/clipboardHistoryHelper';
 import { clipboardIpcInit } from '@/main/ipc/clipboard';
 import { settingIpcInit } from '@/main/ipc/setting';
+import { loadAppConfig } from '@/main/utils/settingHelper';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -23,13 +27,19 @@ let watcher: ClipboardWatcherJs;
 app.whenReady().then(() => {
   const mainWindow = createMainWindow();
 
+  registerMainWindow(mainWindow);
+
   initTray();
   initAppMenu();
   windowIpcInit();
   clipboardIpcInit();
   settingIpcInit();
 
-  watcher = startMonitor(mainWindow);
+  const appConfig = loadAppConfig();
+
+  if (!appConfig.isMonitorStop) {
+    watcher = startMonitor();
+  }
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.

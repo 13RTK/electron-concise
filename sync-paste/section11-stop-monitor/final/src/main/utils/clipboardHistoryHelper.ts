@@ -7,7 +7,17 @@ import { DatabaseSync } from 'node:sqlite';
 
 const userDataDir = app.getPath('userData');
 const database = new DatabaseSync(`${userDataDir}/clipboard_history.db`);
-let watcher: ClipboardWatcherJs;
+
+let watcher: ClipboardWatcherJs | null = null;
+let mainWindow: BrowserWindow | null = null;
+
+export function registerMainWindow(window: BrowserWindow) {
+  mainWindow = window;
+
+  window.on('closed', () => {
+    mainWindow = null;
+  });
+}
 
 database.exec(`
   CREATE TABLE IF NOT EXISTS clipboard_history (
@@ -29,13 +39,19 @@ const deleteClipboardHistory = database.prepare(
   'DELETE FROM clipboard_history WHERE id = ?',
 );
 
-export function startMonitor(mainWindow: BrowserWindow) {
+export function startMonitor() {
+  if (watcher) {
+    return watcher;
+  }
+
   watcher = startWatch(async () => {
     const text = await getText();
 
     insertClipboardHistory.run(text);
 
-    mainWindow.webContents.send(CLIPBOARD_UPDATE_CHANNEL);
+    if (mainWindow) {
+      mainWindow.webContents.send(CLIPBOARD_UPDATE_CHANNEL);
+    }
   });
 
   return watcher;
@@ -52,13 +68,18 @@ export function handleClipboardAction(
   }
 
   if (action === ClipboardAction.STOP_MONITOR) {
-    return watcher.stop();
+    watcher?.stop();
+    watcher = null;
   }
 
   if (action === ClipboardAction.DELETE_HISTORY && historyId) {
     const result = deleteClipboardHistory.run(historyId);
 
     return result.changes > 0;
+  }
+
+  if (action === ClipboardAction.START_MONITOR) {
+    startMonitor();
   }
 
   // TODO: query history

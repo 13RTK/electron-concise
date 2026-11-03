@@ -6,7 +6,7 @@ import Store, { Schema } from 'electron-store';
 const schema: Schema<Setting> = {
   isMonitorStop: {
     type: 'boolean',
-    default: true,
+    default: false,
   },
 };
 
@@ -18,6 +18,8 @@ export function loadAppConfig() {
   if (isMonitorStop === null || isMonitorStop === undefined) {
     store.set('isMonitorStop', false);
   }
+
+  return store.store;
 }
 
 export function handleSettingAction(

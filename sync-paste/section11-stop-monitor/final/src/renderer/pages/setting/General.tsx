@@ -1,8 +1,9 @@
+import { ClipboardAction } from '@/types/ClipboardAction';
 import { SettingAction } from '@/types/SettingAction';
 import { ChangeEvent, useEffect, useState } from 'react';
 
 function General() {
-  const { settingAction } = window.electronAPI;
+  const { settingAction, clipboardAction } = window.electronAPI;
   const [isStopMonitor, setIsStopMonitor] = useState(true);
 
   async function loadConfig() {
@@ -26,6 +27,10 @@ function General() {
     setIsStopMonitor(checked);
 
     await settingAction(SettingAction.SET_SETTING, 'isMonitorStop', checked);
+
+    await clipboardAction(
+      checked ? ClipboardAction.STOP_MONITOR : ClipboardAction.START_MONITOR,
+    );
   }
 
   return (
