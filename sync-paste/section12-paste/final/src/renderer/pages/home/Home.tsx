@@ -37,6 +37,14 @@ function Home() {
     loadClipboardHistory();
   });
 
+  async function pasteClipboardHistory(id: number) {
+    const success = await clipboardAction(ClipboardAction.PASTE_HISTORY, id);
+
+    if (success === false) {
+      alert('Please open Accessibility in your settings!');
+    }
+  }
+
   return (
     <RootLayout>
       <ul className='list bg-base-100 rounded-box shadow-md'>
@@ -45,6 +53,7 @@ function Home() {
             key={clipboardHistory.id}
             clipboardHistory={clipboardHistory}
             onDelete={deleteClipboardHistory}
+            onPaste={pasteClipboardHistory}
           />
         ))}
       </ul>

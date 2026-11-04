@@ -1,12 +1,14 @@
 import { ClipboardHistory } from '@/types/ClipboardHistory';
-import { TrashIcon } from '@phosphor-icons/react';
+import { ClipboardTextIcon, TrashIcon } from '@phosphor-icons/react';
 
 function ClipboardHistoryListItem({
   clipboardHistory,
   onDelete,
+  onPaste,
 }: {
   clipboardHistory: ClipboardHistory;
   onDelete: (id: number) => Promise<void>;
+  onPaste: (id: number) => Promise<void>;
 }) {
   const content =
     clipboardHistory.content.length > 50
@@ -32,23 +34,11 @@ function ClipboardHistoryListItem({
         </div>
       </div>
       {/* Paste */}
-      <button className='btn btn-square btn-ghost'>
-        <svg
-          aria-label='Play'
-          className='size-[1.2em]'
-          xmlns='http://www.w3.org/2000/svg'
-          viewBox='0 0 24 24'
-        >
-          <g
-            strokeLinejoin='round'
-            strokeLinecap='round'
-            strokeWidth='2'
-            fill='none'
-            stroke='currentColor'
-          >
-            <path d='M6 3L20 12 6 21 6 3z'></path>
-          </g>
-        </svg>
+      <button
+        className='btn btn-square btn-ghost'
+        onClick={() => onPaste(clipboardHistory.id)}
+      >
+        <ClipboardTextIcon size={24} weight='thin' />
       </button>
 
       {/* Delete */}

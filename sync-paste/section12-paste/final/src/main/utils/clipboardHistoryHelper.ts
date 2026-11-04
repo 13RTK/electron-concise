@@ -2,14 +2,25 @@ import { CLIPBOARD_UPDATE_CHANNEL } from '@/types/channels/clipboard';
 import { ClipboardAction } from '@/types/ClipboardAction';
 import { ClipboardHistory } from '@/types/ClipboardHistory';
 import { startWatch, getText, ClipboardWatcherJs } from '@crosscopy/clipboard';
-import { app, BrowserWindow, IpcMainInvokeEvent } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  clipboard,
+  IpcMainInvokeEvent,
+  systemPreferences,
+} from 'electron';
+import { execFile } from 'node:child_process';
 import { DatabaseSync } from 'node:sqlite';
+import { promisify } from 'node:util';
 
 const userDataDir = app.getPath('userData');
 const database = new DatabaseSync(`${userDataDir}/clipboard_history.db`);
 
 let watcher: ClipboardWatcherJs | null = null;
 let mainWindow: BrowserWindow | null = null;
+let ignoredClipboardText: string | null = null;
+
+const execFileAsync = promisify(execFile);
 
 export function registerMainWindow(window: BrowserWindow) {
   mainWindow = window;
@@ -35,6 +46,10 @@ const queryClipboardHistory = database.prepare(
   'SELECT * FROM clipboard_history ORDER BY created_at DESC',
 );
 
+const queryClipboardHistoryById = database.prepare(
+  'SELECT content FROM clipboard_history WHERE id = ?',
+);
+
 const deleteClipboardHistory = database.prepare(
   'DELETE FROM clipboard_history WHERE id = ?',
 );
@@ -46,6 +61,15 @@ export function startMonitor() {
 
   watcher = startWatch(async () => {
     const text = await getText();
+
+    if (ignoredClipboardText) {
+      const ignoredText = ignoredClipboardText;
+      ignoredClipboardText = null;
+
+      if (ignoredText === text) {
+        return;
+      }
+    }
 
     insertClipboardHistory.run(text);
 
@@ -82,5 +106,51 @@ export function handleClipboardAction(
     startMonitor();
   }
 
+  if (action === ClipboardAction.PASTE_HISTORY && historyId !== undefined) {
+    pasteHistory(historyId);
+  }
+
   // TODO: query history
+}
+
+async function pasteHistory(id: number) {
+  if (process.platform !== 'darwin') {
+    throw new Error('This feature only support macos');
+  }
+
+  // Check accessibility permission
+  if (!systemPreferences.isTrustedAccessibilityClient(true)) {
+    return false;
+  }
+
+  // Query clipboard history
+  const clipboardHistory = queryClipboardHistoryById.get(id) as
+    | {
+        content: string;
+      }
+    | undefined;
+
+  if (!clipboardHistory) {
+    return false;
+  }
+
+  // Write into as ignored text to avoid re-copy
+  ignoredClipboardText = clipboardHistory.content;
+
+  try {
+    await clipboard.writeText(clipboardHistory.content);
+  } catch (error) {
+    console.log(error);
+    ignoredClipboardText = null;
+  }
+
+  app.hide();
+
+  await new Promise((resolve) => setTimeout(resolve, 150));
+  await execFileAsync('/usr/bin/osascript', [
+    '-e',
+    'tell application "System Events" to keystroke "v" using command down',
+  ]);
+
+  return true;
 }
