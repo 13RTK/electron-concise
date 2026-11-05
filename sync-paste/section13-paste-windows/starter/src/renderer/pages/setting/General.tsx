@@ -1,37 +1,7 @@
-import { ClipboardAction } from '@/types/ClipboardAction';
-import { SettingAction } from '@/types/SettingAction';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { useToggleMonitor } from '@/renderer/hooks/setting';
 
 function General() {
-  const { settingAction, clipboardAction } = window.electronAPI;
-  const [isStopMonitor, setIsStopMonitor] = useState(true);
-
-  async function loadConfig() {
-    const isStopMonitorConfig = await settingAction(
-      SettingAction.GET_SETTING,
-      'isMonitorStop',
-    );
-
-    if (typeof isStopMonitorConfig === 'boolean') {
-      setIsStopMonitor(isStopMonitorConfig);
-    }
-  }
-
-  useEffect(() => {
-    loadConfig();
-  }, []);
-
-  async function handleChange(event: ChangeEvent) {
-    const { checked } = event.target as HTMLInputElement;
-
-    setIsStopMonitor(checked);
-
-    await settingAction(SettingAction.SET_SETTING, 'isMonitorStop', checked);
-
-    await clipboardAction(
-      checked ? ClipboardAction.STOP_MONITOR : ClipboardAction.START_MONITOR,
-    );
-  }
+  const { handleChange, isStopMonitor } = useToggleMonitor();
 
   return (
     <section>

@@ -1,7 +1,7 @@
+import { getAssetPath } from '@/main/utils/assetHelper';
 import {
   MenuItemConstructorOptions,
   nativeImage,
-  app,
   Menu,
   MenuItem,
   shell,
@@ -17,7 +17,7 @@ const alwaysOnTopMenuItem: MenuItemConstructorOptions = {
   },
   icon: isMac
     ? nativeImage.createMenuSymbol('pin')
-    : nativeImage.createFromPath(`${app.getAppPath()}/assets/pin.png`),
+    : nativeImage.createFromPath(getAssetPath('pin.png')),
 };
 
 const menuTemplate: MenuItemConstructorOptions[] = [
