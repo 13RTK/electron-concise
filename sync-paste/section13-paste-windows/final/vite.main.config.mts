@@ -11,7 +11,7 @@ export default defineConfig({
 
   build: {
     rolldownOptions: {
-      external: ['@crosscopy/clipboard'],
+      external: ['@crosscopy/clipboard', 'robotjs'],
     },
   },
 });

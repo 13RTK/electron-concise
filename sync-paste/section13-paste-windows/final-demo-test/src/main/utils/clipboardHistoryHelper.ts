@@ -141,9 +141,9 @@ async function pasteHistory(id: number) {
   if (isMac) {
     app.hide();
   } else {
-    mainWindow?.hide();
+    // mainWindow?.blur();
+    mainWindow?.minimize();
   }
-  // mainWindow?.minimize();
 
   await new Promise((resolve) => setTimeout(resolve, 150));
 

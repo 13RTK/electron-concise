@@ -9,18 +9,16 @@ import {
   IpcMainInvokeEvent,
   systemPreferences,
 } from 'electron';
-import { execFile } from 'node:child_process';
 import { DatabaseSync } from 'node:sqlite';
-import { promisify } from 'node:util';
+import robot from 'robotjs';
 
 const userDataDir = app.getPath('userData');
 const database = new DatabaseSync(`${userDataDir}/clipboard_history.db`);
+const isMac = process.platform === 'darwin';
 
 let watcher: ClipboardWatcherJs | null = null;
 let mainWindow: BrowserWindow | null = null;
 let ignoredClipboardText: string | null = null;
-
-const execFileAsync = promisify(execFile);
 
 export function registerMainWindow(window: BrowserWindow) {
   mainWindow = window;
@@ -107,19 +105,15 @@ export function handleClipboardAction(
   }
 
   if (action === ClipboardAction.PASTE_HISTORY && historyId !== undefined) {
-    pasteHistory(historyId);
+    return pasteHistory(historyId);
   }
 
   // TODO: query history
 }
 
 async function pasteHistory(id: number) {
-  if (process.platform !== 'darwin') {
-    throw new Error('This feature only support macos');
-  }
-
   // Check accessibility permission
-  if (!systemPreferences.isTrustedAccessibilityClient(true)) {
+  if (isMac && !systemPreferences.isTrustedAccessibilityClient(true)) {
     return false;
   }
 
@@ -144,13 +138,14 @@ async function pasteHistory(id: number) {
     ignoredClipboardText = null;
   }
 
-  app.hide();
+  if (isMac) {
+    app.hide();
+  } else {
+    mainWindow?.minimize();
+  }
 
   await new Promise((resolve) => setTimeout(resolve, 150));
-  await execFileAsync('/usr/bin/osascript', [
-    '-e',
-    'tell application "System Events" to keystroke "v" using command down',
-  ]);
+  robot.keyTap('v', isMac ? 'command' : 'control');
 
   return true;
 }

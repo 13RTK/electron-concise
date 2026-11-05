@@ -1,5 +1,6 @@
 allowBuilds:
   electron-winstaller: true
+  robotjs: true
 
 nodeLinker: hoisted
 
