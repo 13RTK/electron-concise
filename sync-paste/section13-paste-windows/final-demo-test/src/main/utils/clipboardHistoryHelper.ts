@@ -138,9 +138,12 @@ async function pasteHistory(id: number) {
     ignoredClipboardText = null;
   }
 
-  // app.hide();
-  // mainWindow?.hide();
-  mainWindow?.minimize();
+  if (isMac) {
+    app.hide();
+  } else {
+    mainWindow?.hide();
+  }
+  // mainWindow?.minimize();
 
   await new Promise((resolve) => setTimeout(resolve, 150));
 
