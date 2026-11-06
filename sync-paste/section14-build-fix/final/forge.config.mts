@@ -12,6 +12,11 @@ const config: ForgeConfig = {
     asar: true,
     icon: `${import.meta.dirname}/assets/app`,
     extraResource: `${import.meta.dirname}/assets`,
+    ignore: (file: string) => {
+      if (!file) return false;
+
+      return !file.startsWith('/.vite') && !file.startsWith('/node_modules');
+    },
   },
   rebuildConfig: {},
   makers: [
