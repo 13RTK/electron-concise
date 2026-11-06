@@ -1,6 +1,5 @@
 import { getAssetPath } from '@/main/utils/assetHelper';
 import { createSettingWindow } from '@/main/windows/settingWindow';
-import { app, BrowserWindow } from 'electron';
 import { nativeImage } from 'electron/common';
 import { Menu, Tray } from 'electron/main';
 
@@ -36,7 +35,7 @@ const contextMenu = Menu.buildFromTemplate([
   },
 ]);
 
-export function initTray(mainWindow: BrowserWindow) {
+export function initTray() {
   const trayLogo = nativeImage.createFromPath(getAssetPath('tray.png'));
   if (process.platform === 'darwin') {
     trayLogo.setTemplateImage(true);
@@ -46,21 +45,5 @@ export function initTray(mainWindow: BrowserWindow) {
 
   tray.on('right-click', () => {
     tray.popUpContextMenu(contextMenu);
-  });
-
-  tray.on('click', () => {
-    if (mainWindow.isDestroyed()) {
-      return;
-    }
-
-    if (isMac) {
-      return app.show();
-    }
-
-    if (mainWindow.isMinimized()) {
-      return mainWindow.restore();
-    }
-
-    mainWindow.show();
   });
 }

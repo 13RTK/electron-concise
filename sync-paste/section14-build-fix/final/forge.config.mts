@@ -6,18 +6,12 @@ import { MakerRpm } from '@electron-forge/maker-rpm';
 import { VitePlugin } from '@electron-forge/plugin-vite';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
 import { FuseV1Options, FuseVersion } from '@electron/fuses';
-import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     icon: `${import.meta.dirname}/assets/app`,
     extraResource: `${import.meta.dirname}/assets`,
-    ignore: (file) => {
-      if (!file) return false;
-
-      return !file.startsWith('/.vite') && !file.startsWith('/node_modules');
-    },
   },
   rebuildConfig: {},
   makers: [
@@ -62,8 +56,6 @@ const config: ForgeConfig = {
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
-
-    new AutoUnpackNativesPlugin({}),
   ],
 };
 

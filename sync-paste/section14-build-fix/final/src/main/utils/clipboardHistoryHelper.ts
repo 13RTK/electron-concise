@@ -141,18 +141,11 @@ async function pasteHistory(id: number) {
   if (isMac) {
     app.hide();
   } else {
-    // mainWindow?.blur();
     mainWindow?.minimize();
   }
 
   await new Promise((resolve) => setTimeout(resolve, 150));
-
   robot.keyTap('v', isMac ? 'command' : 'control');
-
-  // await execFileAsync('/usr/bin/osascript', [
-  //   '-e',
-  //   'tell application "System Events" to keystroke "v" using command down',
-  // ]);
 
   return true;
 }

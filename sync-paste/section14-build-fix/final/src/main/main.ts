@@ -29,7 +29,7 @@ app.whenReady().then(() => {
 
   registerMainWindow(mainWindow);
 
-  initTray(mainWindow);
+  initTray();
   initAppMenu();
   windowIpcInit();
   clipboardIpcInit();
