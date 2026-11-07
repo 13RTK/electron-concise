@@ -3,7 +3,7 @@ import { loadWindow } from '@/main/windows/loadWindowHelper';
 import { BrowserWindow } from 'electron';
 import path from 'node:path';
 
-let mainWindow: BrowserWindow;
+let mainWindow: BrowserWindow | null;
 
 export function createMainWindow() {
   if (mainWindow) {
@@ -24,7 +24,11 @@ export function createMainWindow() {
   loadWindow(mainWindow, 'home');
 
   mainWindow.once('ready-to-show', () => {
-    mainWindow.show();
+    mainWindow?.show();
+  });
+
+  mainWindow.once('closed', () => {
+    mainWindow = null;
   });
 
   return mainWindow;

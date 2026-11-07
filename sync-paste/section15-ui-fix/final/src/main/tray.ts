@@ -1,5 +1,6 @@
 import { getAssetPath } from '@/main/utils/assetHelper';
 import { IS_MAC } from '@/main/utils/platform';
+import { createMainWindow } from '@/main/windows/mainWindow';
 import { createSettingWindow } from '@/main/windows/settingWindow';
 import { nativeImage } from 'electron/common';
 import { Menu, Tray } from 'electron/main';
@@ -45,5 +46,13 @@ export function initTray() {
 
   tray.on('right-click', () => {
     tray.popUpContextMenu(contextMenu);
+  });
+
+  tray.on('click', () => {
+    const mainWindow = createMainWindow();
+
+    if (!mainWindow.isVisible()) {
+      mainWindow.show();
+    }
   });
 }
