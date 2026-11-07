@@ -12,13 +12,14 @@ import {
 import { clipboardIpcInit } from '@/main/ipc/clipboard';
 import { settingIpcInit } from '@/main/ipc/setting';
 import { loadAppConfig } from '@/main/utils/settingHelper';
+import { IS_MAC } from '@/main/utils/platform';
+import { systemIpcInit } from '@/main/ipc/system';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
-const isMac = process.platform === 'darwin';
 let watcher: ClipboardWatcherJs;
 
 // This method will be called when Electron has finished
@@ -34,6 +35,7 @@ app.whenReady().then(() => {
   windowIpcInit();
   clipboardIpcInit();
   settingIpcInit();
+  systemIpcInit();
 
   const appConfig = loadAppConfig();
 
@@ -54,7 +56,7 @@ app.whenReady().then(() => {
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (!isMac) {
+  if (!IS_MAC) {
     watcher.stop();
     app.quit();
   }

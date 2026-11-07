@@ -1,9 +1,9 @@
+import { IS_MAC } from '@/main/utils/platform';
 import { loadWindow } from '@/main/windows/loadWindowHelper';
 import { BrowserWindow } from 'electron';
 import path from 'node:path';
 
 let mainWindow: BrowserWindow;
-const isMac = process.platform === 'darwin';
 
 export function createMainWindow() {
   if (mainWindow) {
@@ -15,7 +15,7 @@ export function createMainWindow() {
     width: 800,
     height: 600,
     show: false,
-    frame: isMac ? false : true,
+    frame: IS_MAC ? false : true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
     },

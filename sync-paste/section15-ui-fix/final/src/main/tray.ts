@@ -1,13 +1,13 @@
 import { getAssetPath } from '@/main/utils/assetHelper';
+import { IS_MAC } from '@/main/utils/platform';
 import { createSettingWindow } from '@/main/windows/settingWindow';
 import { nativeImage } from 'electron/common';
 import { Menu, Tray } from 'electron/main';
 
-const isMac = process.platform === 'darwin';
-const gearIcon = isMac
+const gearIcon = IS_MAC
   ? nativeImage.createMenuSymbol('gear')
   : nativeImage.createFromPath(getAssetPath('gear.png'));
-const infoIcon = isMac
+const infoIcon = IS_MAC
   ? nativeImage.createMenuSymbol('info')
   : nativeImage.createFromPath(getAssetPath('info.png'));
 

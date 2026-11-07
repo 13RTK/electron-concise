@@ -12,6 +12,8 @@ import {
 import { SettingAction } from '@/types/SettingAction';
 import { SETTING_ACTION_CHANNEL } from '@/types/channels/setting';
 import { SettingKey, SettingValue } from '@/types/Setting';
+import { SystemAction } from '@/types/SystemAction';
+import { SYSTEM_INFO_CHANNEL } from '@/types/channels/system';
 
 const apiKey = 'electronAPI';
 
@@ -39,6 +41,9 @@ const api = {
       settingKey,
       settingValue,
     ),
+
+  systemAction: (action: SystemAction) =>
+    ipcRenderer.invoke(SYSTEM_INFO_CHANNEL, action),
 } satisfies Window[typeof apiKey];
 
 contextBridge.exposeInMainWorld(apiKey, api);

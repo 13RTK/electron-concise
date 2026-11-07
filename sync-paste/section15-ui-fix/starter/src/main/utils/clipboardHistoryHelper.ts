@@ -1,3 +1,4 @@
+import { IS_MAC } from '@/main/utils/platform';
 import { CLIPBOARD_UPDATE_CHANNEL } from '@/types/channels/clipboard';
 import { ClipboardAction } from '@/types/ClipboardAction';
 import { ClipboardHistory } from '@/types/ClipboardHistory';
@@ -14,7 +15,6 @@ import robot from 'robotjs';
 
 const userDataDir = app.getPath('userData');
 const database = new DatabaseSync(`${userDataDir}/clipboard_history.db`);
-const isMac = process.platform === 'darwin';
 
 let watcher: ClipboardWatcherJs | null = null;
 let mainWindow: BrowserWindow | null = null;
@@ -113,7 +113,7 @@ export function handleClipboardAction(
 
 async function pasteHistory(id: number) {
   // Check accessibility permission
-  if (isMac && !systemPreferences.isTrustedAccessibilityClient(true)) {
+  if (IS_MAC && !systemPreferences.isTrustedAccessibilityClient(true)) {
     return false;
   }
 
@@ -138,14 +138,14 @@ async function pasteHistory(id: number) {
     ignoredClipboardText = null;
   }
 
-  if (isMac) {
+  if (IS_MAC) {
     app.hide();
   } else {
     mainWindow?.minimize();
   }
 
-  await new Promise((resolve) => setTimeout(resolve, 150));
-  robot.keyTap('v', isMac ? 'command' : 'control');
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  robot.keyTap('v', IS_MAC ? 'command' : 'control');
 
   return true;
 }

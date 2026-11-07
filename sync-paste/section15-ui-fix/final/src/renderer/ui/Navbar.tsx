@@ -11,7 +11,7 @@ function Navbar() {
   return (
     <nav className='navbar bg-base-100 shadow-sm sm:p-2 sm:min-h-4 p-1 min-h-2'>
       <div className='flex-1'>
-        <a className='btn btn-ghost sm:text-xl text-sm'>daisyUI</a>
+        <a className='btn btn-ghost sm:text-xl text-sm'>SyncPaste</a>
       </div>
       <div className='flex-none'>
         <button

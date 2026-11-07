@@ -1,4 +1,5 @@
 import { getAssetPath } from '@/main/utils/assetHelper';
+import { IS_MAC } from '@/main/utils/platform';
 import {
   MenuItemConstructorOptions,
   nativeImage,
@@ -7,15 +8,13 @@ import {
   shell,
 } from 'electron';
 
-const isMac = process.platform === 'darwin';
-
 const alwaysOnTopMenuItem: MenuItemConstructorOptions = {
   label: 'Always on top',
   type: 'checkbox',
   click: (menuItem, window) => {
     window?.setAlwaysOnTop(menuItem.checked);
   },
-  icon: isMac
+  icon: IS_MAC
     ? nativeImage.createMenuSymbol('pin')
     : nativeImage.createFromPath(getAssetPath('pin.png')),
 };

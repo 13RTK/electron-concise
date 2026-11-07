@@ -21,6 +21,8 @@ export interface IElectronAPI {
     settingKey: SettingKey,
     settingValue?: SettingValue,
   ) => Promise<void | SettingValue>;
+
+  systemAction: (action: SystemAction) => Promise<void | NodeJS.Platform>;
 }
 
 declare global {
