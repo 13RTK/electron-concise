@@ -1,13 +1,22 @@
 import { openFile } from '@/main/utils/fileHelper';
-import { MenuItemConstructorOptions, Menu, MenuItem, shell } from 'electron';
+import { FILE_OPEN_CHANNEL } from '@/types/channels/file';
+import {
+  MenuItemConstructorOptions,
+  Menu,
+  MenuItem,
+  shell,
+  BrowserWindow,
+} from 'electron';
+
+let mainWindow: BrowserWindow | null;
 
 const fileOpenMenuItem: MenuItemConstructorOptions = {
   label: 'Open...',
   click: async () => {
     const result = await openFile();
 
-    if (result) {
-      // TODO: Send file content from main to renderer
+    if (result && mainWindow) {
+      mainWindow.webContents.send(FILE_OPEN_CHANNEL, result);
     }
   },
 };
@@ -26,7 +35,9 @@ const menuTemplate: MenuItemConstructorOptions[] = [
   },
 ];
 
-export function initAppMenu() {
+export function initAppMenu(window: BrowserWindow) {
+  mainWindow = window;
+
   const appMenu =
     Menu.getApplicationMenu()?.items.map((item: MenuItem) => {
       if (item.role?.toLowerCase() === 'filemenu') {
