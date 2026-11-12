@@ -6,10 +6,10 @@ export function Editor() {
   const editorRef = useRef<null | monaco.editor.IStandaloneCodeEditor>(null);
   const monacoEl = useRef<null | HTMLDivElement>(null);
 
-  const { onOpenFile } = window.electronAPI;
+  const { onOpenFile, getCurrentFile } = window.electronAPI;
 
   useEffect(() => {
-    if (!editorRef) {
+    if (!monacoEl) {
       return;
     }
 
@@ -22,11 +22,23 @@ export function Editor() {
 
     editorRef.current = editor;
 
+    getCurrentFile()
+      .then((file) => {
+        if (!file) {
+          return;
+        }
+
+        editor.setValue(file.content);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
     return () => {
       editor?.dispose();
       editorRef.current = null;
     };
-  }, [editorRef.current]);
+  }, []);
 
   onOpenFile((file) => {
     editorRef.current?.setValue(file.content);
