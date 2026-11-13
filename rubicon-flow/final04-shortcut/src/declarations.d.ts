@@ -8,6 +8,7 @@ import { WindowAction } from '@/types/WindowAction';
 
 export interface IElectronAPI {
   onOpenFile: (callback: (file: File) => void) => void;
+  onSaveFile: (callback) => void;
 
   getCurrentFile: () => Promise<File | null>;
 }

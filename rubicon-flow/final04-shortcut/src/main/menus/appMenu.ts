@@ -1,5 +1,5 @@
 import { openFile } from '@/main/utils/fileHelper';
-import { FILE_OPEN_CHANNEL } from '@/types/channels/file';
+import { FILE_OPEN_CHANNEL, FILE_SAVE_CHANNEL } from '@/types/channels/file';
 import {
   MenuItemConstructorOptions,
   Menu,
@@ -10,16 +10,29 @@ import {
 
 let mainWindow: BrowserWindow | null;
 
-const fileOpenMenuItem: MenuItemConstructorOptions = {
-  label: 'Open...',
-  click: async () => {
-    const result = await openFile();
+const fileMenuItem: MenuItemConstructorOptions[] = [
+  {
+    label: 'Open...',
+    click: async () => {
+      const result = await openFile();
 
-    if (result && mainWindow) {
-      mainWindow.webContents.send(FILE_OPEN_CHANNEL, result);
-    }
+      if (result && mainWindow) {
+        mainWindow.webContents.send(FILE_OPEN_CHANNEL, result);
+        mainWindow.setTitle(result.filename);
+      }
+    },
   },
-};
+  {
+    label: 'Save',
+    click: async () => {
+      if (mainWindow) {
+        mainWindow.webContents.send(FILE_SAVE_CHANNEL);
+      }
+    },
+
+    accelerator: 'CommandOrControl+S',
+  },
+];
 
 const menuTemplate: MenuItemConstructorOptions[] = [
   {
@@ -44,7 +57,7 @@ export function initAppMenu(window: BrowserWindow) {
         return new MenuItem({
           role: 'fileMenu',
           submenu: Menu.buildFromTemplate([
-            fileOpenMenuItem,
+            ...fileMenuItem,
             ...(item.submenu?.items ?? []),
           ]),
         });
