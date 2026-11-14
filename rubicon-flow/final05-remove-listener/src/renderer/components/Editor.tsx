@@ -34,6 +34,7 @@ export function Editor() {
         }
 
         editor.setValue(file.content);
+        setLoadedFileContent(file.content);
       })
       .catch((error) => {
         console.error(error);
@@ -45,23 +46,30 @@ export function Editor() {
     };
   }, []);
 
-  onOpenFile((file) => {
-    editorRef.current?.setValue(file.content);
-    setLoadedFileContent(file.content);
-  });
+  useEffect(() => {
+    const removeOpenFileListener = onOpenFile((file) => {
+      editorRef.current?.setValue(file.content);
+      setLoadedFileContent(file.content);
+    });
 
-  onSaveFile(() => {
-    if (!editorRef || !editorRef.current || !loadedFileContent) {
-      return;
-    }
+    const removeSaveFileListener = onSaveFile(() => {
+      if (!editorRef || !editorRef.current || !loadedFileContent) {
+        return;
+      }
 
-    if (editorRef.current.getValue() === loadedFileContent) {
-      return console.log('not change detected');
-    }
+      if (editorRef.current.getValue() === loadedFileContent) {
+        return console.log('not change detected');
+      }
 
-    console.log('try to save');
-    setLoadedFileContent(editorRef.current.getValue());
-  });
+      console.log('try to save');
+      setLoadedFileContent(editorRef.current.getValue());
+    });
+
+    return () => {
+      removeOpenFileListener();
+      removeSaveFileListener();
+    };
+  }, [loadedFileContent]);
 
   return <div className={styles.Editor} ref={monacoEl}></div>;
 }

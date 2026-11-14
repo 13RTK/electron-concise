@@ -6,9 +6,11 @@ import type { File } from '@/types/File';
 import { SettingKey, SettingValue } from '@/types/Setting';
 import { WindowAction } from '@/types/WindowAction';
 
+type Unsubscribe = () => void;
+
 export interface IElectronAPI {
-  onOpenFile: (callback: (file: File) => void) => void;
-  onSaveFile: (callback) => void;
+  onOpenFile: (callback: (file: File) => void) => Unsubscribe;
+  onSaveFile: (callback) => Unsubscribe;
 
   getCurrentFile: () => Promise<File | null>;
 }
