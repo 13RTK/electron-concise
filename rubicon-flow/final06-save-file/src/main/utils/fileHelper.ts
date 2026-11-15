@@ -1,5 +1,5 @@
-import { dialog } from 'electron';
-import { readFile } from 'node:fs/promises';
+import { dialog, IpcMainEvent } from 'electron';
+import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 let currentFilePath: string | null = null;
@@ -35,4 +35,12 @@ export async function getCurrentFileContent() {
     filename: path.basename(currentFilePath),
     content: fileContent,
   };
+}
+
+export async function updateFile(_event: IpcMainEvent, newContent: string) {
+  if (!currentFilePath) {
+    return null;
+  }
+
+  await writeFile(currentFilePath, newContent, 'utf-8');
 }

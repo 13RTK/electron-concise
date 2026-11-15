@@ -3,6 +3,7 @@ import {
   FILE_GET_CURRENT_CHANNEL,
   FILE_OPEN_CHANNEL,
   FILE_SAVE_CHANNEL,
+  FILE_UPDATE_CHANNEL,
 } from '@/types/channels/file';
 import { File } from '@/types/File';
 
@@ -18,6 +19,7 @@ const api = {
     return () => ipcRenderer.removeListener(FILE_OPEN_CHANNEL, listener);
   },
 
+  // Main to renderer
   onSaveFile: (callback) => {
     const listener = () => callback();
 
@@ -25,6 +27,10 @@ const api = {
 
     return () => ipcRenderer.removeListener(FILE_SAVE_CHANNEL, listener);
   },
+
+  // Renderer to main
+  updateFile: (newContent: string) =>
+    ipcRenderer.send(FILE_UPDATE_CHANNEL, newContent),
 
   getCurrentFile: () => ipcRenderer.invoke(FILE_GET_CURRENT_CHANNEL),
 } satisfies Window[typeof apiKey];

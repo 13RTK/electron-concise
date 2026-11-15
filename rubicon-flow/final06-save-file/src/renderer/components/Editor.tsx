@@ -11,7 +11,8 @@ export function Editor() {
     null,
   );
 
-  const { onOpenFile, getCurrentFile, onSaveFile } = window.electronAPI;
+  const { onOpenFile, getCurrentFile, onSaveFile, updateFile } =
+    window.electronAPI;
 
   useEffect(() => {
     if (!monacoEl) {
@@ -61,7 +62,7 @@ export function Editor() {
         return console.log('not change detected');
       }
 
-      console.log('try to save');
+      updateFile(editorRef.current.getValue());
       setLoadedFileContent(editorRef.current.getValue());
     });
 

@@ -10,7 +10,12 @@ type Unsubscribe = () => void;
 
 export interface IElectronAPI {
   onOpenFile: (callback: (file: File) => void) => Unsubscribe;
+
+  // From main to renderer
   onSaveFile: (callback) => Unsubscribe;
+
+  // From renderer to main
+  updateFile: (newContent: string) => void;
 
   getCurrentFile: () => Promise<File | null>;
 }
