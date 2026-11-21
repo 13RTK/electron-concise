@@ -9,7 +9,7 @@ let extensionEntries: ExtensionEntry[] | null = null;
 
 function getExtensions() {
   if (extensionEntries) {
-    return;
+    return extensionEntries;
   }
 
   extensionEntries = monaco.languages.getLanguages().flatMap((language) =>

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import styles from './Editor.module.css';
+
 import { useEditor } from '@/renderer/hooks/editor';
 
 export function Editor() {
@@ -39,5 +39,5 @@ export function Editor() {
     updateTitle(isDirty);
   }, [isDirty]);
 
-  return <div className={styles.Editor} ref={monacoEl}></div>;
+  return <div className="h-full w-full" ref={monacoEl}></div>;
 }
