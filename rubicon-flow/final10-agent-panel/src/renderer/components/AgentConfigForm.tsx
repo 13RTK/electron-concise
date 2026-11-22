@@ -20,6 +20,52 @@ const apiPaths: Record<ApiFormat, string> = {
 export function AgentConfigForm() {
   const [apiFormat, setApiFormat] = useState<ApiFormat>('openai-chat');
 
+  const [apiKey, setApiKey] = useState('');
+  const [baseURL, setBaseURL] = useState('');
+  const [model, setModel] = useState('');
+
+  const [isFetching, setIsFetching] = useState(false);
+
+  async function testConnection() {
+    if (!apiKey || !baseURL || !model) {
+      return alert('Please enter correct configuration');
+    }
+
+    setIsFetching(true);
+
+    try {
+      const response = await fetch(`${baseURL}${apiPaths[apiFormat]}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': apiKey,
+        },
+
+        body: JSON.stringify({
+          model,
+          messages: [
+            {
+              role: 'system',
+              content: '你是一个AI助手',
+            },
+            {
+              role: 'user',
+              content: '你好，请介绍一下自己',
+            },
+          ],
+        }),
+      });
+      const result = await response.json();
+      console.log(result);
+
+      alert('success connect!');
+    } catch (error: any) {
+      return alert(error.message);
+    } finally {
+      setIsFetching(false);
+    }
+  }
+
   return (
     <>
       <h2 className="text-sm leading-5 font-semibold xl:text-base xl:leading-6">
@@ -53,6 +99,8 @@ export function AgentConfigForm() {
             className={inputClassName}
             type="password"
             placeholder="Enter API key"
+            onChange={(event) => setApiKey(event.target.value.trim())}
+            value={apiKey}
           />
         </label>
 
@@ -64,6 +112,8 @@ export function AgentConfigForm() {
             className={inputClassName}
             type="url"
             placeholder={baseUrlPlaceholders[apiFormat]}
+            onChange={(event) => setBaseURL(event.target.value.trim())}
+            value={baseURL}
           />
         </label>
 
@@ -75,6 +125,8 @@ export function AgentConfigForm() {
             className={inputClassName}
             type="text"
             placeholder="Enter model name"
+            onChange={(event) => setModel(event.target.value.trim())}
+            value={model}
           />
         </label>
 
@@ -82,12 +134,15 @@ export function AgentConfigForm() {
           <button
             type="button"
             className="cursor-pointer rounded-md border border-[#414141] px-3 py-1.5 text-xs text-[#e5e5e5] transition-colors enabled:hover:bg-[#333] enabled:active:bg-[#444] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#638de0] disabled:cursor-not-allowed disabled:opacity-50 xl:text-sm"
+            onClick={testConnection}
+            disabled={isFetching}
           >
-            Test Connection
+            {isFetching ? 'Testing...' : 'Test Connection'}
           </button>
           <button
             type="button"
             className="cursor-pointer rounded-md bg-[#456ab5] px-3 py-1.5 text-xs text-white transition-colors enabled:hover:bg-[#527bc9] enabled:active:bg-[#365795] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#638de0] disabled:cursor-not-allowed disabled:opacity-50 xl:text-sm"
+            disabled={isFetching}
           >
             Save Configuration
           </button>
