@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { Editor } from './components/Editor';
+import { AgentPanel } from './components/AgentPanel';
 import { RobotIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
@@ -8,8 +9,8 @@ function App() {
   const [showPanel, setShowPanel] = useState(false);
 
   return (
-    <div className="h-screen w-full">
-      <nav className="flex h-6 justify-end bg-[#1C1C1C]">
+    <div className="flex h-screen w-full flex-col overflow-hidden">
+      <nav className="flex h-6 shrink-0 justify-end bg-[#1C1C1C]">
         <section className="h-full">
           <button
             type="button"
@@ -21,21 +22,23 @@ function App() {
         </section>
       </nav>
 
-      <Group>
-        <Panel>
-          <main className="h-full min-w-0 flex-1">
-            <Editor />
-          </main>
-        </Panel>
-
-        <Separator className="w-0.5 bg-[#1C1C1C] hover:bg-blue-500" />
-
-        {showPanel && (
-          <Panel defaultSize="20%" className="bg-[#1C1C1C]">
-            <div>panel</div>
+      <div className="min-h-0 flex-1">
+        <Group>
+          <Panel>
+            <main className="h-full min-w-0 flex-1">
+              <Editor />
+            </main>
           </Panel>
-        )}
-      </Group>
+
+          <Separator className="w-0.5 bg-[#1C1C1C] hover:bg-blue-500" />
+
+          {showPanel && (
+            <Panel defaultSize="20%" className="bg-[#1C1C1C]">
+              <AgentPanel />
+            </Panel>
+          )}
+        </Group>
+      </div>
     </div>
   );
 }
