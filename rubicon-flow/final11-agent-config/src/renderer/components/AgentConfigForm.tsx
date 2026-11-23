@@ -1,3 +1,5 @@
+import { chatWithModel } from '@/renderer/utils/modelHelper';
+import { ApiFormat } from '@/types/Model';
 import { useState } from 'react';
 
 const inputClassName =
@@ -8,14 +10,6 @@ const baseUrlPlaceholders = {
   'openai-responses': 'https://api.openai.com/v1',
   'anthropic-messages': 'https://api.anthropic.com/v1',
 } as const;
-
-type ApiFormat = keyof typeof baseUrlPlaceholders;
-
-const apiPaths: Record<ApiFormat, string> = {
-  'openai-chat': '/chat/completions',
-  'openai-responses': '/responses',
-  'anthropic-messages': '/messages',
-};
 
 export function AgentConfigForm() {
   const [apiFormat, setApiFormat] = useState<ApiFormat>('openai-chat');
@@ -34,29 +28,20 @@ export function AgentConfigForm() {
     setIsFetching(true);
 
     try {
-      const response = await fetch(`${baseURL}${apiPaths[apiFormat]}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': apiKey,
-        },
-
-        body: JSON.stringify({
-          model,
+      const response = await chatWithModel(
+        { apiKey, apiFormat, baseURL, model },
+        {
           messages: [
             {
-              role: 'system',
-              content: '你是一个AI助手',
-            },
-            {
+              id: Date.now(),
               role: 'user',
-              content: '你好，请介绍一下自己',
+              content: 'Hi, intro yourself',
             },
           ],
-        }),
-      });
-      const result = await response.json();
-      console.log(result);
+        },
+      );
+
+      console.log(response);
 
       alert('success connect!');
     } catch (error: any) {

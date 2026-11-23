@@ -41,8 +41,11 @@
     "vite": "^8.3.6"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.107",
+    "@ai-sdk/openai": "^4.0.122",
     "@phosphor-icons/react": "^2.1.10",
     "@tailwindcss/vite": "^4.3.5",
+    "ai": "^7.0.179",
     "electron-squirrel-startup": "^1.0.1",
     "monaco-editor": "^0.57.0",
     "react": "^19.3.1",
