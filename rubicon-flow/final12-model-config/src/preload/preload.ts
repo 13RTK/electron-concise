@@ -7,6 +7,8 @@ import {
   WINDOW_TITLE_UPDATE_CHANNEL,
 } from '@/types/channels/file';
 import { File } from '@/types/File';
+import { MODEL_CONFIG_CHANNEL } from '@/types/channels/model';
+import { ModelConfig, ModelConfigAction } from '@/types/Model';
 
 const apiKey = 'electronAPI';
 
@@ -37,6 +39,15 @@ const api = {
 
   updateTitle: (isDirty: boolean) =>
     ipcRenderer.send(WINDOW_TITLE_UPDATE_CHANNEL, isDirty),
+
+  getModelConfig: () =>
+    ipcRenderer.invoke(MODEL_CONFIG_CHANNEL, ModelConfigAction.GET_CONFIG),
+  saveModelConfig: (modelConfig: ModelConfig) =>
+    ipcRenderer.invoke(
+      MODEL_CONFIG_CHANNEL,
+      ModelConfigAction.SAVE_CONFIG,
+      modelConfig,
+    ),
 } satisfies Window[typeof apiKey];
 
 contextBridge.exposeInMainWorld(apiKey, api);

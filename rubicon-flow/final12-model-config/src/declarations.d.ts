@@ -3,6 +3,7 @@
 
 import { ClipboardHistory } from '@/types/ClipboardHistory';
 import type { File } from '@/types/File';
+import { ModelConfig } from '@/types/Model';
 import { SettingKey, SettingValue } from '@/types/Setting';
 import { WindowAction } from '@/types/WindowAction';
 
@@ -20,6 +21,9 @@ export interface IElectronAPI {
   getCurrentFile: () => Promise<File | null>;
 
   updateTitle: (isDirty: boolean) => void;
+
+  getModelConfig: () => Promise<ModelConfig[]>;
+  saveModelConfig: (modelConfig: ModelConfig) => Promise<boolean>;
 }
 
 declare global {

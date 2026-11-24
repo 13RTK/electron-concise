@@ -1,5 +1,5 @@
 import { chatWithModel } from '@/renderer/utils/modelHelper';
-import { ApiFormat } from '@/types/Model';
+import { ApiFormat, ModelConfig } from '@/types/Model';
 import { useState } from 'react';
 
 const inputClassName =
@@ -11,7 +11,11 @@ const baseUrlPlaceholders = {
   'anthropic-messages': 'https://api.anthropic.com/v1',
 } as const;
 
-export function AgentConfigForm() {
+export function AgentConfigForm({
+  saveModelConfig,
+}: {
+  saveModelConfig: (modelConfig: ModelConfig) => void;
+}) {
   const [apiFormat, setApiFormat] = useState<ApiFormat>('openai-chat');
 
   const [apiKey, setApiKey] = useState('');
@@ -49,6 +53,14 @@ export function AgentConfigForm() {
     } finally {
       setIsFetching(false);
     }
+  }
+
+  function handleSaveModelConfig() {
+    if (!apiKey || !baseURL || !model) {
+      return alert('Please enter correct configuration');
+    }
+
+    saveModelConfig({ apiFormat, baseURL, apiKey, model });
   }
 
   return (
@@ -128,6 +140,7 @@ export function AgentConfigForm() {
             type="button"
             className="cursor-pointer rounded-md bg-[#456ab5] px-3 py-1.5 text-xs text-white transition-colors enabled:hover:bg-[#527bc9] enabled:active:bg-[#365795] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#638de0] disabled:cursor-not-allowed disabled:opacity-50 xl:text-sm"
             disabled={isFetching}
+            onClick={handleSaveModelConfig}
           >
             Save Configuration
           </button>

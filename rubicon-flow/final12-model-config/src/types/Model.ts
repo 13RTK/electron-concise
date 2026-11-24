@@ -9,3 +9,8 @@ export type ModelConfig = {
   model: string;
   apiFormat: ApiFormat;
 };
+
+export enum ModelConfigAction {
+  GET_CONFIG = 'getConfig',
+  SAVE_CONFIG = 'saveConfig',
+}
