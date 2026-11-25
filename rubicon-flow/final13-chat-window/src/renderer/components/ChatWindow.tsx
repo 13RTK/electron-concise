@@ -1,5 +1,5 @@
 import type { ModelConfig } from '@/types/Model';
-import { type ChatMessage } from '@/renderer/utils/modelHelper';
+import { chatWithModel, type ChatMessage } from '@/renderer/utils/modelHelper';
 import { ArrowUpIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
 
@@ -8,6 +8,37 @@ export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const modelNames = modelConfigs.map(({ model }) => model);
   const modelIndex = modelConfigs[selectedModelIndex] ? selectedModelIndex : 0;
+
+  const [messageContent, setMessageContent] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function handleSendMessage() {
+    setIsLoading(true);
+
+    const currentMessageContent = messageContent;
+    const currentChatMessage: ChatMessage = {
+      id: Date.now(),
+      role: 'user',
+      content: currentMessageContent,
+    };
+
+    setMessages((prev) => [...prev, currentChatMessage]);
+    setMessageContent('');
+
+    const response = await chatWithModel(modelConfigs[selectedModelIndex], {
+      messages: [...messages, currentChatMessage],
+    });
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        role: 'assistant',
+        content: response,
+      },
+    ]);
+
+    setIsLoading(false);
+  }
 
   return (
     <section
@@ -62,6 +93,8 @@ export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
             ))}
           </ol>
         )}
+
+        {isLoading && <span>Thinking...</span>}
       </section>
 
       <footer className="shrink-0 border-t border-[#4f5867] p-3.5">
@@ -71,11 +104,15 @@ export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
             placeholder="Ask about your code…"
             rows={2}
             className="min-w-0 flex-1 resize-none text-[13px]/5 outline-none placeholder:text-[#a3acba]"
+            value={messageContent}
+            onChange={(event) => setMessageContent(event.target.value)}
           />
           <button
             type="submit"
             aria-label="Send message"
             className="grid size-8 shrink-0 cursor-pointer place-items-center rounded-md bg-[#7b98ff] text-[#181b21] opacity-60 hover:bg-blue-500"
+            disabled={isLoading}
+            onClick={handleSendMessage}
           >
             <ArrowUpIcon size={16} weight="bold" aria-hidden="true" />
           </button>

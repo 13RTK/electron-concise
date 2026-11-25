@@ -2,7 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { Editor } from './components/Editor';
 import { AgentPanel } from './components/AgentPanel';
 import { RobotIcon } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { Activity, useState } from 'react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
 
 function App() {
@@ -32,11 +32,11 @@ function App() {
 
           <Separator className="w-0.5 bg-[#1C1C1C] hover:bg-blue-500" />
 
-          {showPanel && (
+          <Activity mode={showPanel ? 'visible' : 'hidden'}>
             <Panel defaultSize="20%" className="bg-[#1C1C1C]">
               <AgentPanel />
             </Panel>
-          )}
+          </Activity>
         </Group>
       </div>
     </div>
