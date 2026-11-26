@@ -1,13 +1,8 @@
+import { ChatMessage } from '@/db/schema';
 import { ModelConfig } from '@/types/Model';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createOpenAI } from '@ai-sdk/openai';
 import { generateText } from 'ai';
-
-export type ChatMessage = {
-  id: number;
-  role: 'user' | 'assistant';
-  content: string;
-};
 
 export type ChatOptions = {
   messages: ChatMessage[];

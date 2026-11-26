@@ -5,6 +5,7 @@ import { createMainWindow } from '@/main/windows/mainWindow';
 import { IS_MAC } from '@/main/utils/platform';
 import { initFileIpc } from '@/main/ipc/file';
 import { initModelIpc } from '@/main/ipc/model';
+import { migrateToLatest } from '@/scripts/migrate';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -14,7 +15,18 @@ if (started) {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
+  if (process.argv.includes('--migrate-db')) {
+    try {
+      await migrateToLatest();
+      app.exit();
+    } catch (error) {
+      app.exit(1);
+      console.log(error);
+    }
+    return;
+  }
+
   const mainWindow = createMainWindow();
   initAppMenu(mainWindow);
 

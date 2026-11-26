@@ -1,7 +1,8 @@
 import type { ModelConfig } from '@/types/Model';
-import { chatWithModel, type ChatMessage } from '@/renderer/utils/modelHelper';
+import { chatWithModel } from '@/renderer/utils/modelHelper';
 import { ArrowUpIcon } from '@phosphor-icons/react';
 import { useState } from 'react';
+import { ChatMessage } from '@/db/schema';
 
 export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
   const [selectedModelIndex, setSelectedModelIndex] = useState(0);
