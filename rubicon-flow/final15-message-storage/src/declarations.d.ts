@@ -1,6 +1,7 @@
 /// <reference types="@electron-forge/plugin-vite/forge-vite-env" />
 /// <reference types="vite/client" />
 
+import { ChatMessage } from '@/db/schema';
 import { ClipboardHistory } from '@/types/ClipboardHistory';
 import type { File } from '@/types/File';
 import { ModelConfig } from '@/types/Model';
@@ -24,6 +25,9 @@ export interface IElectronAPI {
 
   getModelConfig: () => Promise<ModelConfig[]>;
   saveModelConfig: (modelConfig: ModelConfig) => Promise<boolean>;
+
+  getMessages: () => Promise<ChatMessage[]>;
+  saveMessage: (newMessage: ChatMessage) => Promise<ChatMessage>;
 }
 
 declare global {

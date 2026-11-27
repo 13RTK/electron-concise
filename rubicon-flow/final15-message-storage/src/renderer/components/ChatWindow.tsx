@@ -1,10 +1,13 @@
 import type { ModelConfig } from '@/types/Model';
 import { chatWithModel } from '@/renderer/utils/modelHelper';
 import { ArrowUpIcon } from '@phosphor-icons/react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChatMessage } from '@/db/schema';
 
 export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
+  const { getMessages, saveMessage } = window.electronAPI;
+  const messageListRef = useRef<HTMLElement>(null);
+
   const [selectedModelIndex, setSelectedModelIndex] = useState(0);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const modelNames = modelConfigs.map(({ model }) => model);
@@ -25,21 +28,43 @@ export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
 
     setMessages((prev) => [...prev, currentChatMessage]);
     setMessageContent('');
+    await saveMessage(currentChatMessage);
 
     const response = await chatWithModel(modelConfigs[selectedModelIndex], {
       messages: [...messages, currentChatMessage],
     });
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        role: 'assistant',
-        content: response,
-      },
-    ]);
+    const modelResponse: ChatMessage = {
+      id: Date.now(),
+      role: 'assistant',
+      content: response,
+    };
+
+    setMessages((prev) => [...prev, modelResponse]);
+    await saveMessage(modelResponse);
 
     setIsLoading(false);
   }
+
+  useEffect(() => {
+    async function loadMessages() {
+      setIsLoading(true);
+
+      const messagesData = await getMessages();
+      setMessages(messagesData);
+
+      setIsLoading(false);
+    }
+
+    loadMessages();
+  }, []);
+
+  useEffect(() => {
+    const messageList = messageListRef.current;
+
+    if (messageList) {
+      messageList.scrollTop = messageList.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <section
@@ -74,6 +99,7 @@ export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
         aria-label="Messages"
         className="min-h-0 flex-1 overflow-y-auto p-3.5"
         tabIndex={0}
+        ref={messageListRef}
       >
         {messages.length === 0 ? (
           <p className="text-[#a3acba]">No messages yet.</p>

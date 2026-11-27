@@ -6,6 +6,7 @@ import { IS_MAC } from '@/main/utils/platform';
 import { initFileIpc } from '@/main/ipc/file';
 import { initModelIpc } from '@/main/ipc/model';
 import { migrateToLatest } from '@/scripts/migrate';
+import { initMessageIpc } from '@/main/ipc/message';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -32,6 +33,7 @@ app.whenReady().then(async () => {
 
   initFileIpc();
   initModelIpc();
+  initMessageIpc();
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.

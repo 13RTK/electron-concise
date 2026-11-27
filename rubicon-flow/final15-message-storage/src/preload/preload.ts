@@ -9,6 +9,9 @@ import {
 import { File } from '@/types/File';
 import { MODEL_CONFIG_CHANNEL } from '@/types/channels/model';
 import { ModelConfig, ModelConfigAction } from '@/types/Model';
+import { MESSAGE_ACTION_CHANNEL } from '@/types/channels/message';
+import { MessageAction } from '@/types/Message';
+import { ChatMessage } from '@/db/schema';
 
 const apiKey = 'electronAPI';
 
@@ -47,6 +50,15 @@ const api = {
       MODEL_CONFIG_CHANNEL,
       ModelConfigAction.SAVE_CONFIG,
       modelConfig,
+    ),
+
+  getMessages: () =>
+    ipcRenderer.invoke(MESSAGE_ACTION_CHANNEL, MessageAction.GET_MESSAGES),
+  saveMessage: (newMessage: ChatMessage) =>
+    ipcRenderer.invoke(
+      MESSAGE_ACTION_CHANNEL,
+      MessageAction.SAVE_MESSAGE,
+      newMessage,
     ),
 } satisfies Window[typeof apiKey];
 
