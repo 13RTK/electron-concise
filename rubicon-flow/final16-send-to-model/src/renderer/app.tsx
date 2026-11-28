@@ -2,11 +2,13 @@ import { createRoot } from 'react-dom/client';
 import { Editor } from './components/Editor';
 import { AgentPanel } from './components/AgentPanel';
 import { RobotIcon } from '@phosphor-icons/react';
-import { Activity, useState } from 'react';
+import { Activity } from 'react';
 import { Group, Panel, Separator } from 'react-resizable-panels';
+import { useAtom } from 'jotai';
+import { showPanelAtom } from '@/renderer/atoms/showPanel';
 
 function App() {
-  const [showPanel, setShowPanel] = useState(false);
+  const [showPanel, setShowPanel] = useAtom(showPanelAtom);
 
   return (
     <div className="flex h-screen w-full flex-col overflow-hidden">

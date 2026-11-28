@@ -3,6 +3,8 @@ import { chatWithModel } from '@/renderer/utils/modelHelper';
 import { ArrowUpIcon } from '@phosphor-icons/react';
 import { useEffect, useRef, useState } from 'react';
 import { ChatMessage } from '@/db/schema';
+import { useAtom } from 'jotai';
+import { messageContentAtom } from '@/renderer/atoms/message';
 
 export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
   const { getMessages, saveMessage } = window.electronAPI;
@@ -13,7 +15,7 @@ export function ChatWindow({ modelConfigs }: { modelConfigs: ModelConfig[] }) {
   const modelNames = modelConfigs.map(({ model }) => model);
   const modelIndex = modelConfigs[selectedModelIndex] ? selectedModelIndex : 0;
 
-  const [messageContent, setMessageContent] = useState('');
+  const [messageContent, setMessageContent] = useAtom(messageContentAtom);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleSendMessage() {
